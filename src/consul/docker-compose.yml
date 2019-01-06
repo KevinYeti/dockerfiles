@@ -3,37 +3,53 @@ version: '3'
 services:
 
   consul-server-1:
-    name: consul-server-1
+    container_name: consul-server-1
     image: consul:latest
     environment:
       CONSUL_BIND_INTERFACE: eth0
+    ports:
+      - "8300:8300"
+      - "8301:8301"
+      - "8301:8301/udp"
     networks:
       - backend
     command: "agent -server -bind=172.17.0.2 -client 0.0.0.0 --bootstrap-expect=3 -ui"
 
   consul-server-2:
-    name: consul-server-2
+    container_name: consul-server-2
     image: consul:latest
     environment:
       CONSUL_BIND_INTERFACE: eth0
+    ports:
+      - "9300:8300"
+      - "9301:8301"
+      - "9301:8301/udp"
     networks:
       - backend
     command: "agent -server -client 0.0.0.0 --join 172.17.0.2"
 
   consul-server-3:
-    name: consul-server-3
+    container_name: consul-server-3
     image: consul:latest
     environment:
       CONSUL_BIND_INTERFACE: eth0
+    ports:
+      - "10300:8300"
+      - "10301:8301"
+      - "10301:8301/udp"
     networks:
       - backend
     command: "agent -server -client 0.0.0.0 --join 172.17.0.2"
 
   consul-agent-1: 
-    name: consul-agent-1
+    container_name: consul-agent-1
     image: consul:latest
     environment:
       CONSUL_BIND_INTERFACE: eth0
+    ports:
+      - "11300:8300"
+      - "11301:8301"
+      - "11301:8301/udp"
     networks:
       - backend
     command: "agent -client 0.0.0.0 --join 172.17.0.2"
