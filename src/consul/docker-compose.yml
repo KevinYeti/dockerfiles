@@ -8,6 +8,10 @@ services:
     image: consul:latest
     environment:
       CONSUL_BIND_INTERFACE: eth0
+      CONSUL_LOCAL_CONFIG: '{"leave_on_terminate": true}'
+    networks:
+      consul_net:
+        ipv4_address: 172.22.0.3
     ports:
       - "8300:8300"
       - "8301:8301"
@@ -25,6 +29,10 @@ services:
     image: consul:latest
     environment:
       CONSUL_BIND_INTERFACE: eth0
+      CONSUL_LOCAL_CONFIG: '{"leave_on_terminate": true}'
+    networks:
+      consul_net:
+        ipv4_address: 172.22.0.4
     ports:
       - "9300:8300"
       - "9301:8301"
@@ -34,7 +42,7 @@ services:
       - "9400:8400"
       - "9500:8500"
       - "9600:8600"
-    command: "agent -server -client 0.0.0.0 --join 172.22.0.3  -node=consul-server-2"
+    command: "agent -server -client 0.0.0.0 -retry-join 172.22.0.3  -node=consul-server-2"
 
   consul-server-3:
     container_name: consul-server-3
@@ -42,6 +50,10 @@ services:
     image: consul:latest
     environment:
       CONSUL_BIND_INTERFACE: eth0
+      CONSUL_LOCAL_CONFIG: '{"leave_on_terminate": true}'
+    networks:
+      consul_net:
+        ipv4_address: 172.22.0.5
     ports:
       - "10300:8300"
       - "10301:8301"
@@ -51,7 +63,7 @@ services:
       - "10400:8400"
       - "10500:8500"
       - "10600:8600"
-    command: "agent -server -client 0.0.0.0 --join 172.22.0.3  -node=consul-server-3"
+    command: "agent -server -client 0.0.0.0 -retry-join 172.22.0.3  -node=consul-server-3"
 
   consul-agent-1: 
     container_name: consul-agent-1
@@ -59,6 +71,10 @@ services:
     image: consul:latest
     environment:
       CONSUL_BIND_INTERFACE: eth0
+      CONSUL_LOCAL_CONFIG: '{"leave_on_terminate": true}'
+    networks:
+      consul_net:
+        ipv4_address: 172.22.0.6
     ports:
       - "11300:8300"
       - "11301:8301"
@@ -68,5 +84,11 @@ services:
       - "11400:8400"
       - "11500:8500"
       - "11600:8600"
-    command: "agent -client 0.0.0.0 --join 172.22.0.3 -node=consul-agent-1"
+    command: "agent -client 0.0.0.0 -retry-join 172.22.0.3 -node=consul-agent-1"
 
+networks:
+  consul_net:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.22.0.0/24
