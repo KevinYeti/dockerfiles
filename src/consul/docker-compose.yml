@@ -86,6 +86,21 @@ services:
       - "11600:8600"
     command: "agent -client 0.0.0.0 -retry-join 172.22.0.3 -node=consul-agent-1"
 
+  fabio:
+    container_name: fabio-server
+    hostname: fabio-server
+    image: fabiolb/fabio
+    environment:
+      CONSUL_BIND_INTERFACE: eth0
+    networks:
+      consul_net:
+        ipv4_address: 172.22.0.10
+    ports:
+      - "9998:9998"
+      - "9999:9999"
+    volumes:
+      - ./fabio.properties:/etc/fabio/fabio.properties
+
 networks:
   consul_net:
     driver: bridge
